@@ -17,3 +17,61 @@
 
   * Groonga族の概要
   * Groonga族の最新情報
+  * Groonga族の今後の情報
+
+= Groonga族とは
+
+(('tag:center'))
+↓の総称
+
+  * ((*Groongaそのもの*))
+  * Groongaと他のプロダクトを\n
+    ((*つなぐプロダクト*))
+    * ポイント：\n
+      Groongaはライブラリーとして\n
+      他のプロダクトに埋め込める！
+
+= Groonga族：Mroonga
+
+    # image
+    # src = images/mroonga-logo.svg
+    # relative_width = 100
+
+(('tag:center'))
+むるんが\n
+((*M*))ySQL + G((*roonga*))
+
+= Mroongaのよいところ
+
+簡単に使える
+
+= 簡単
+
+  * SQLで使える
+  * 全文検索の知識なしで\n
+    使い始められる
+
+= Mroongaを使う：スキーマ
+
+  # coderay sql
+  CREATE TABLE table (
+    column TEXT,
+    FULLTEXT INDEX (column)
+    -- ↑と↓を追加
+  ) ENGINE=Mroonga
+    DEFAULT CHARSET=utf8mb4;
+
+(('tag:center'))
+(('note:ポイント：全文検索の索引を作ると言っているだけ'))
+
+= Mroongaを使う：検索
+
+  # coderay sql
+  SELECT * FROM table
+    WHERE
+      MATCH(column)
+      AGAINST("*D+ キーワード1 キーワード2"
+              IN BOOLEAN MODE);
+
+(('tag:center'))
+(('note:ポイント：Web検索エンジンと同様にクエリーを書ける'))
