@@ -11,7 +11,7 @@
 : allotted-time
    30m
 : theme
-   groonga
+   .
 
 = 内容
 
@@ -41,7 +41,7 @@
 むるんが\n
 ((*M*))ySQL + G((*roonga*))
 
-= Mroongaのよいところ
+= Mroongaのよいところ1
 
 簡単に使える
 
@@ -75,3 +75,136 @@
 
 (('tag:center'))
 (('note:ポイント：Web検索エンジンと同様にクエリーを書ける'))
+
+= なぜ知識なしで使えるの？
+
+適切な\n
+デフォルト値
+
+= デフォルト値
+
+  * トークナイザー：可変長Bigram\n
+    (('note:（トークナイザー≒検索キーワード抽出モジュール）'))
+    * 日本語+英語でもいい感じに動く
+  * ノーマライザー：MySQL互換\n
+    (('note:（ノーマライザー≒テキスト正規化モジュール）'))
+    * 一部非互換：🍣≠🍺
+
+= Mroongaのよいところ2
+
+速い！
+
+= 例：MySQL 5.7と比較
+
+(('tag:center'))
+(('note:ポイント：MySQL 5.7のInnoDBは日本語全文検索対応！'))
+
+  # RT
+
+  クエリー, 文字数, InnoDB\nmecab, InnoDB\n2gram, Mroonga\nbigram
+
+  COUNT, 1, (('2.62s')), N/A, ((*0.74s*))
+  COUNT, 2, ((*0.07s*)), (('1.74s')), (('0.27s'))
+  ORDER BY, 1, (('2.78s')), N/A, ((*0.83s*))
+  ORDER BY, 2, ((*0.09s*)), (('2.72s')), (('0.31s'))
+
+(('tag:center'))
+(('note:出典：MySQLの全文検索に関するあれやこれや by yoku0825'))\n
+(('note:http://www.slideshare.net/yoku0825/mysql-47364986'))
+
+  * InnoDB mecabは遅いことがある
+  * Mroongaは安定して速い
+
+= MySQL 5.7で日本語全文検索
+
+  # coderay sql
+  CREATE TABLE table (
+    column TEXT,
+    FULLTEXT INDEX (column)
+      WITH PARSER mecab -- ←がポイント
+  ) ENGINE=InnoDB
+    DEFAULT CHARSET=utf8mb4;
+
+(('tag:center'))
+(('note:mecabの代わりにngramも指定できるが実用的ではなさそう'))\n
+(('note:mecabを使い場合は↑の他にMeCabの設定が必要'))\n
+(('note:https://dev.mysql.com/doc/refman/5.7/en/fulltext-search-mecab.html'))
+
+= Mroonga vs MySQL 5.7
+
+  * Mroonga
+    * デフォルトでいい感じに動く\n
+      (('note:（選びたければ指定できる）'))
+    * 安定して速い
+  * MySQL 5.7 InnoDB
+    * パーサーを選ばないといけない\n
+      (('note:（mecab?ngram?違いは？）'))
+    * 遅いこともある
+
+= Mroongaが速い理由：1
+
+Groonga直結\n
+↓\n
+Groongaが速いと\n
+Mroongaも速い
+
+= Mroongaが速い理由：2
+
+(({ORDER BY LIMIT}))を最適化
+
+= (({ORDER BY LIMIT}))最適化
+
+  # coderay sql
+  SELECT * FROM table
+    WHERE MATCH(column1)
+          AGAINST('...' IN BOOLEAN MODE)
+    ORDER BY column2
+    LIMIT 10;
+
+(('tag:center'))
+MySQLに先頭10件しか返さない\n
+(('note:ORDER BY LIMITをMySQLが処理するより'))\n
+(('note:Groongaが処理する方が速いので速くなる'))
+
+= (({ORDER BY LIMIT}))最適化！
+
+  # coderay sql
+  SELECT * FROM table
+    WHERE MATCH(column1)
+          AGAINST('...' IN BOOLEAN MODE)
+      AND column3 < 100 -- 追加
+    ORDER BY column2
+    LIMIT 10;
+
+(('tag:center'))
+Groonga:(({MATCH AGAINST}))以外も処理\n
+(('note:MySQLが処理するよりGroongaが処理する方が速いので速くなる'))
+
+= Mroongaが速い理由：3
+
+必要なカラム\n
+のみ\n
+アクセス
+
+= 必要なカラムのみアクセス
+
+  # coderay sql
+  SELECT c1, c3, c5 FROM table;
+
+(('tag:center'))
+(({c2})), (({c4}))にはアクセスしない\n
+→I/Oが減って速い\n
+(('note:ポイント：Groongaはカラム指向データストア'))\n
+(('note:ポイント：InnoDBは行指向データストア'))\n
+(('note:ポイント：→一部のカラムが必要なだけでも1行すべてアクセス'))
+
+= Groonga族：PGroonga
+
+    # image
+    # src = images/pgroonga-logo.svg
+    # relative_width = 100
+
+(('tag:center'))
+ぴーじーるんが\n
+((*P*))ost((*g*))reSQL + ((*Groonga*))
+
