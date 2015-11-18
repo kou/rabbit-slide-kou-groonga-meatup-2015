@@ -19,23 +19,31 @@
   * Groonga族の最新情報
   * Groonga族の今後の情報
 
-= Groonga族とは
+= Groonga族
 
-(('tag:center'))
-↓の総称
+総称
+
+= Groonga族
 
   * ((*Groongaそのもの*))
   * Groongaと他のプロダクトを\n
     ((*つなぐプロダクト*))
-    * ポイント：\n
-      Groongaはライブラリーとして\n
-      他のプロダクトに埋め込める！
+  * ((*名前がXroonga*))
+
+= つなぐプロダクト
+
+  # image
+  # src = images/groonga-family-glue.svg
+  # relative_width = 110
+
+(('note:ポイント'))\n
+(('note:Groongaはライブラリーとして他のプロダクトに埋め込める！'))
 
 = Groonga族：Mroonga
 
-    # image
-    # src = images/mroonga-logo.svg
-    # relative_width = 100
+  # image
+  # src = images/mroonga-logo.svg
+  # relative_width = 100
 
 (('tag:center'))
 むるんが\n
