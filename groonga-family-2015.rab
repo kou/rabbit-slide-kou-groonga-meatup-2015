@@ -39,6 +39,41 @@
 (('note:ポイント'))\n
 (('note:Groongaはライブラリーとして他のプロダクトに埋め込める！'))
 
+= Groonga族：Groonga
+
+  # image
+  # src = images/groonga-logo.svg
+  # relative_width = 100
+
+(('tag:center'))
+ぐるんが
+
+= Groongaのよいところ1
+
+手厚い\n
+日本語サポート
+
+= サポート例：RKサーチ
+
+(('tag:center'))
+ローマ字でカナを検索\n
+(('note:Romaji to Kana prefix search'))
+
+  * 例：「ya」→「ヤキニク」
+    * 「や」・「ヤ」→「ヤキニク」も可
+  * 利用例：検索ボックスでの補完
+    * Googleもやっているやつ
+    * ぐるなびはGroongaでやっている
+
+= ぐるなびでの利用例
+
+  # image
+  # src = images/gnavi-complete.png
+  # relative_height = 85
+
+(('tag:center'))
+(('note:「yu」→「ユウラクチョウ」→「有楽町」'))
+
 = Groonga族：Mroonga
 
   # image
