@@ -50,6 +50,49 @@
 
 = Groongaのよいところ1
 
+高速な\n
+全文検索機能\n
+(('note:（全文検索エンジンなので当然）'))
+
+= Groongaのよいところ2
+
+即時更新
+
+= 即時更新
+
+  * 更新→すぐに検索可能
+    * 思想：新鮮なデータは高価値
+    * 新しいデータはすぐに入れて！
+  * 工夫：更新中も検索性能キープ
+    * 即時データ投入を妨げる理由を減少
+    * 実装：参照ロックフリー
+
+= 性能の傾向
+
+  # image
+  # src = images/groonga-performance-characteristic.svg
+  # relative_width = 100
+
+= Groongaのよいところ3
+
+高速な集計処理
+
+= 高速な集計処理
+
+  * 集計処理
+    * 同一カラムの値を一気にアクセス
+  * 工夫：↑向けデータ構造を採用
+    * 高速な集計処理を実現
+    * 実装：カラムストア
+
+= カラムストア
+
+  # image
+  # src = images/groonga-column-store.svg
+  # relative_width = 100
+
+= Groongaのよいところ3
+
 手厚い\n
 日本語サポート
 
@@ -251,3 +294,9 @@ Groonga:(({MATCH AGAINST}))以外も処理\n
 ぴーじーるんが\n
 ((*P*))ost((*g*))reSQL + ((*Groonga*))
 
+= 今後
+
+= Groonga
+
+  * カラムストアをもっと活かす
+    * grn_ts（ぐるんたす）
