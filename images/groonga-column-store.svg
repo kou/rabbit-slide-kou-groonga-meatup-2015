@@ -25,17 +25,17 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.70710678"
-     inkscape:cx="362.65996"
-     inkscape:cy="163.21619"
+     inkscape:zoom="0.5"
+     inkscape:cx="530.6108"
+     inkscape:cy="204.8198"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1920"
-     inkscape:window-height="1016"
-     inkscape:window-x="1920"
-     inkscape:window-y="27"
-     inkscape:window-maximized="1"
+     inkscape:window-width="1243"
+     inkscape:window-height="661"
+     inkscape:window-x="2129"
+     inkscape:window-y="138"
+     inkscape:window-maximized="0"
      fit-margin-top="5"
      fit-margin-bottom="5"
      fit-margin-left="5"
@@ -487,13 +487,13 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:32px;line-height:125%;font-family:Sans;-inkscape-font-specification:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="175.05591"
+       x="191.05591"
        y="91.459404"
        id="text8331"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan8333"
-         x="175.05591"
+         x="191.05591"
          y="91.459404">Groonga</tspan></text>
     <text
        xml:space="preserve"
@@ -510,11 +510,11 @@
        sodipodi:linespacing="125%"
        id="text8341"
        y="94.216759"
-       x="339.84061"
+       x="338.16293"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:32px;line-height:125%;font-family:Sans;-inkscape-font-specification:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        xml:space="preserve"><tspan
          y="94.216759"
-         x="339.84061"
+         x="338.16293"
          id="tspan8343"
          sodipodi:role="line">RDBMSなど</tspan></text>
     <rect
@@ -572,13 +572,13 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:32px;line-height:125%;font-family:Sans;-inkscape-font-specification:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="246.11063"
+       x="262.11063"
        y="370.40976"
        id="text8373"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan8375"
-         x="246.11063"
+         x="262.11063"
          y="370.40976">値の管理</tspan></text>
     <text
        sodipodi:linespacing="125%"
@@ -595,12 +595,17 @@
        sodipodi:linespacing="125%"
        id="text8411"
        y="415.99911"
-       x="177.02733"
+       x="181.02733"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:32px;line-height:125%;font-family:Sans;-inkscape-font-specification:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        xml:space="preserve"><tspan
          y="415.99911"
-         x="177.02733"
+         x="181.02733"
          id="tspan8413"
          sodipodi:role="line">得意なアクセス単位</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#888a85;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 323.18747,66.595237 0,267.286363"
+       id="path8159"
+       inkscape:connector-curvature="0" />
   </g>
 </svg>

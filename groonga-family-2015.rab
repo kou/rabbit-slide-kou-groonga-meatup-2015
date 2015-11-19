@@ -104,9 +104,21 @@
 
   * 例：「ya」→「ヤキニク」
     * 「や」・「ヤ」→「ヤキニク」も可
-  * 利用例：検索ボックスでの補完
+  * 用意するもの
+    * カタカナでのヨミガナだけ\n
+      (('note:（ひらがな・ローマ字はいらない）'))\n
+      (('note:（ローマ字の訓令式・ヘボン式の差はGroongaが吸収）'))
+
+= RKサーチの利用例
+
+  * 検索ボックスでの補完
     * Googleもやっているやつ
-    * ぐるなびはGroongaでやっている
+    * ぐるなびはGroongaで実現
+  * 入力補助
+    * 例：タグの入力\n
+      (('note:同じことに違うタグをつけると検索精度があがらない'))\n
+      (('note:全体で一貫性があることは重要'))\n
+      (('note:既存のタグを入力補助することで同じことに同じタグをつけやすくする'))
 
 = ぐるなびでの利用例
 
@@ -116,6 +128,25 @@
 
 (('tag:center'))
 (('note:「yu」→「ユウラクチョウ」→「有楽町」'))
+
+= Groongaのよいところ4
+
+組み込める
+
+= 組み込める
+
+  * ライブラリーとして利用可能
+    * ＝インターフェイスを変えられる
+    * ＝使いやすい方法で使える
+
+= つなぐプロダクト
+
+  # image
+  # src = images/groonga-family-glue.svg
+  # relative_width = 110
+
+(('note:ポイント'))\n
+(('note:Groongaはライブラリーとして他のプロダクトに埋め込める！'))
 
 = Groonga族：Mroonga
 
@@ -156,7 +187,7 @@
   SELECT * FROM table
     WHERE
       MATCH(column)
-      AGAINST("*D+ キーワード1 キーワード2"
+      AGAINST('*D+ キーワード1 キーワード2'
               IN BOOLEAN MODE);
 
 (('tag:center'))
@@ -177,6 +208,18 @@
     * 一部非互換：🍣≠🍺
 
 = Mroongaのよいところ2
+
+MySQLの機能を\n
+使える
+
+= MySQLの機能
+
+  * レプリケーション
+  * ユーザー管理
+  * クライアントライブラリー
+  * ...
+
+= Mroongaのよいところ3
 
 速い！
 
@@ -279,20 +322,220 @@ Groonga:(({MATCH AGAINST}))以外も処理\n
 
 (('tag:center'))
 (({c2})), (({c4}))にはアクセスしない\n
-→I/Oが減って速い\n
-(('note:ポイント：Groongaはカラム指向データストア'))\n
-(('note:ポイント：InnoDBは行指向データストア'))\n
-(('note:ポイント：→一部のカラムが必要なだけでも1行すべてアクセス'))
+→I/Oが減って速い
+
+= Groongaはカラムストア
+
+(('tag:center'))
+(('note:必要なカラムのみアクセスできる理由'))
+
+  # image
+  # src = images/groonga-column-store.svg
+  # relative_width = 100
 
 = Groonga族：PGroonga
 
-    # image
-    # src = images/pgroonga-logo.svg
-    # relative_width = 100
+  # image
+  # src = images/pgroonga-logo.svg
+  # relative_width = 100
 
 (('tag:center'))
 ぴーじーるんが\n
 ((*P*))ost((*g*))reSQL + ((*Groonga*))
+
+= PGroongaのよいところ1
+
+簡単に使える
+
+= 簡単
+
+  * SQLで使える
+  * 全文検索の知識なしで\n
+    使い始められる
+
+= PGroongaを使う：索引
+
+  # coderay sql
+  CREATE INDEX name ON table
+    USING pgroonga (column);
+
+(('tag:center'))
+(('note:ポイント：全文検索の索引を作ると言っているだけ'))
+
+= PGroongaを使う：検索
+
+  # coderay sql
+  SELECT * FROM table
+    WHERE
+      column @@ 'キーワード1 キーワード2';
+
+(('tag:center'))
+(('note:ポイント：Web検索エンジンと同様にクエリーを書ける'))
+
+= なぜ知識なしで使えるの？
+
+適切な\n
+デフォルト値
+
+= デフォルト値
+
+  * トークナイザー：可変長Bigram\n
+    (('note:（トークナイザー≒検索キーワード抽出モジュール）'))
+    * 日本語+英語でもいい感じに動く
+  * ノーマライザー：NFKC\n
+    (('note:（ノーマライザー≒テキスト正規化モジュール）'))
+    * Unicode正規化形式の1つ
+
+= PGroongaのよいところ2
+
+PostgreSQLの\n
+機能を使える
+
+= PostgreSQLの機能
+
+  * トランザクション
+  * ユーザー管理
+  * クライアントライブラリー
+  * ...
+
+= PGroongaのよいところ3
+
+速い！
+
+= 例：pg_bigmと比較
+
+(('tag:center'))
+(('note:ポイント：PostgreSQL標準では日本語全文検索非対応'))
+
+  # RT
+  delimiter = [|]
+
+  ヒット数 | PGroonga | pg_bigm
+
+  368 | ((*0.030s*)) | (('0.107s'))
+  17,172 | ((*0.121s*)) | (('1.224s'))
+  22,885 | ((*0.179s*)) | (('2.472s'))
+  625,792(*) | (('0.646s')) | ((*0.556s*))
+
+(('note:データ：Wikipedia日本語版'))\n
+(('note:約184万レコード・平均サイズ約3.8KB'))\n
+(('note:詳細：http://www.clear-code.com/blog/2015/5/25.html'))
+
+(('note:(*) 他は検索語が3文字以上でこれだけ2文字'))
+
+(('tag:center'))
+PGroongaは安定して速い！
+
+= 更新中も性能維持
+
+  # image
+  # src = images/groonga-performance-characteristic.svg
+  # relative_width = 100
+
+= GINと更新と参照
+
+  # image
+  # src = images/read-while-write-gin.svg
+  # relative_height = 95
+
+(('tag:center'))
+(('note:GINはpg_bigmが使っているPostgreSQL標準の転置索引実装'))
+
+= PGroongaと更新と参照
+
+  # image
+  # src = images/read-while-write-pgroonga.svg
+  # relative_height = 95
+
+(('tag:center'))
+(('note:PGroongaはGroongaを使っているので参照ロックフリー'))
+
+= ロード時間も速い
+
+  # RT
+  delimiter = [|]
+
+  元データの\nロード時間 | 索引\n作成時間\nPGroonga | 索引\n作成時間\npg_bigm
+
+  16分31秒 | 25分37秒 | 5時間56分15秒
+
+(('note:データ：Wikipedia日本語版'))\n
+(('note:約184万レコード・平均サイズ約3.8KB'))\n
+(('note:詳細：http://www.clear-code.com/blog/2015/5/25.html'))
+
+(('tag:center'))
+pg_bigmより約14倍速い！
+
+= Groonga族：Rroonga
+
+  # image
+  # src = images/rroonga-logo.svg
+  # relative_width = 100
+
+(('tag:center'))
+るるんが\n
+((*R*))uby + ((*Groonga*))
+
+= Rroongaのよいところ1
+
+...
+
+= Groonga族：Droonga
+
+  # image
+  # src = images/droonga-logo.svg
+  # relative_width = 100
+
+(('tag:center'))
+どゅるんが\n
+((*D*))istributed ((*Groonga*))\n
+(('note:分散対応Groonga'))
+
+= Droongaのよいところ1
+
+分散機能
+
+= 分散機能
+
+  * レプリケーション
+    * 実装済み
+    * ダウンタイムなしでノード追加可能
+  * シャーディング
+    * 実装予定
+
+= 最新情報
+
+= Groonga: 1
+
+groonga-httpdを\n
+正式機能に
+
+= groonga-httpd
+
+  * nginxにGroongaを組み込み
+    * Groonga族
+    * nginxのモジュールとして実装
+  * Groonga HTTPサーバー互換
+  * ↑より高機能(('note:（HTTPサーバーとして）'))
+    * 認証・TLS・HTTP/2
+
+= Groonga: 2
+
+Windowsでの\n
+DBサイズ減少\n
+(('note:（1/3以下になるケースもあり）'))
+
+= Groonga: 3
+
+ドリルダウンの\n
+高機能化
+
+= ドリルダウンの高機能化
+
+  * 既存の集計処理：カウントのみ
+    * 追加：合計・最小値・最大値・平均
+  * 利用例
+    * ...
 
 = 今後
 
