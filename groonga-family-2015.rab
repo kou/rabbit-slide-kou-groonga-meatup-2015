@@ -545,7 +545,103 @@ pg_bigmより約14倍速い！
 
 = Rroongaのよいところ1
 
-...
+Rubyで書ける
+
+= RubyでDB作成
+
+  # coderay ruby
+
+  Groonga::Database.create(:path => "/tmp/db")
+
+= Rubyでテーブル定義
+
+  # coderay ruby
+
+  Groonga::Schema.define do |schema|
+    schema.create_table("Users",
+                        :type => :hash) do |table|
+      table.short_text("name")
+      table.int8("age")
+    end
+  end
+
+= Rubyでデータロード
+
+  # coderay ruby
+
+  users = Groonga["Users"]
+  users.add("alice",
+            :name => "Alice",
+            :age => 29)
+
+= Rubyでデータロード
+
+  # coderay ruby
+
+  users = Groonga["Users"]
+  users.add("alice",
+            :name => "Alice",
+            :age => 29)
+
+= Rubyで検索
+
+  # coderay ruby
+
+  twentys = users.select do |record|
+    (record.age >= 20) & (record.age < 30)
+  end
+  twentys.each do |twenty|
+    p twenty.name # => "Alice"
+  end
+
+= Rroongaのよいところ2
+
+サーバーいらず
+
+= サーバーいらず
+
+  * ローカルのDBを操作
+    * SQLiteと同じ
+  * 向き不向き
+    * 向き：1台で扱えるデータ量
+    * 不向き：1台で扱えないデータ量
+
+= Rroongaの利用事例1
+
+Milkode\n
+ソースコード\n
+検索\n
+(('note:http://milkode.ongaeshi.me/'))
+
+= Mlikode
+
+  * 行指向のソースコード検索\n
+    (('note:grepの親戚'))
+  * 数万ファイルも余裕
+    * grepだと遅いけど1台で扱える量
+  * 検索方法
+    * Rroongaでファイル検索
+    * →絞り込んだファイルをgrep\n
+      (('note:ポイント：絞り込んだ後ならgrepでも速い！'))
+
+= Rroongaの利用事例2
+
+ROMA\n
+分散KVS\n
+(('note:http://roma-kvs.org/'))
+
+= ROMA
+
+  * Rakuten/Ruby\n
+    On-Memory\n
+    Architecture
+  * Rubyで実装された分散KVS
+  * ストレージにGroongaを利用\n
+    (('note:Tokyo Cabinetも使える'))
+
+= Rroongaの利用事例3
+
+Droonga
 
 = Groonga族：Droonga
 
@@ -564,11 +660,31 @@ pg_bigmより約14倍速い！
 
 = 分散機能
 
-  * レプリケーション
-    * 実装済み
-    * ダウンタイムなしでノード追加可能
-  * シャーディング
-    * 実装予定
+  * レプリケーション：実装済み\n
+    (('note:ダウンタイムなしでノード追加可能'))
+    * データ複製
+    * 参照性能・可用性向上
+  * シャーディング：実装予定
+    * データ分割
+    * 更新性能・最大データ量向上
+
+= レプリケーション時の性能
+
+  # image
+  # src = images/droonga-throughput.png
+  # relative_width = 100
+
+= Droongaのよいところ2
+
+Groonga互換API
+
+= Groonga互換API
+
+  * Groongaと同じように使える
+    * Groongaからの移行手順あり\n
+      (('note:http://droonga.org/ja/tutorial/groonga/'))
+    * DroongaからGroongaも可
+  * クライアント無変更で動く
 
 = 最新情報
 
@@ -606,7 +722,146 @@ DBサイズ減少\n
 
 = 今後
 
-= Groonga
+= Groonga: 1
 
-  * カラムストアをもっと活かす
-    * grn_ts（ぐるんたす）
+(('tag:center'))
+(('tag:margin-bottom'))
+カラムストアをもっと活かす
+
+  * grn_ts（ぐるんたす）
+
+= Groonga: 2
+
+(('tag:center'))
+(('tag:margin-bottom'))
+mrubyをデフォルト有効
+
+  * プラグインをRubyで書ける
+  * 式を書き換えられる
+  * オプティマイザーを書ける
+
+= Groonga: 3
+
+(('tag:center'))
+(('tag:margin-bottom'))
+プラグインエコシステム
+
+  * プラグイン管理コマンド提供
+    * 例：(({grn plugin install XXX}))
+  * プラグインリポジトリー提供\n
+    (('note:GoのようにGitから直接インストールでもいいかも'))
+  * 対応プラグイン
+    * Rubyで書かれたプラグイン
+
+= Groonga: 4
+
+(('tag:center'))
+(('tag:margin-bottom'))
+位置指定マッチ対応
+
+  * N番目のトークンならマッチ
+    * 例：1番目のトークンは(({hello}))？
+    * マッチする：(({hello world}))
+    * マッチしない：(({hey! hello world}))
+
+= 位置指定マッチ応用例1
+
+(('tag:center'))
+(('tag:margin-bottom'))
+正規表現の前方一致検索
+
+  * Groongaでの構文：(({\A}))
+    * 例：(({\Ahello}))
+  * 実装：
+    * 1番目のトークンかチェック
+
+= 位置指定マッチ応用例2
+
+(('tag:center'))
+(('tag:margin-bottom'))
+ベクターのN番目の要素にマッチ
+
+  # coderay json
+  {
+    "rank": ["Alice", "Bob", "Chris"]
+  }
+  # rank[0] @ "Bob"→マッチしない
+  # rank[1] @ "Bob"→マッチする
+
+= Groonga: 5
+
+(('tag:center'))
+(('tag:margin-bottom'))
+(({select}))で計算結果での\n
+ドリルダウン・ソートに対応
+
+  * 例
+    * 元データ：日時(('note:（2015-11-29 13:30）'))
+    * 計算結果：年月日(('note:（2015-11-29）'))
+    * ドリルダウン：計算結果を使用\n
+      (('note:（2015-11-29: 1件、2015-11-30: 2件）'))
+
+= Mroonga: 1
+
+(('tag:center'))
+(('tag:margin-bottom'))
+ラッパーモードで\n
+ロールバック対応
+
+  * 現状：ロールバック非対応\n
+    (('note:（変更が残ってしまい検索結果に不整合発生）'))
+    * 今後：コミット時にまとめて更新\n
+      (('note:（ロールバックしても変更が残らない）'))
+  * 現状：トランザクション中に\n
+    更新データを検索可能
+    * 今後：検索不可能
+
+= Mroonga: 2
+
+(('tag:center'))
+(('tag:margin-bottom'))
+MariaDBで\n
+テーブルパラメーター対応
+
+  # coderay sql
+
+  CREATE TABLE xxx (
+  ) ENGINE=Mroonga
+    COMMENT='ENGINE "InnoDB"'
+    -- ↑を↓と書ける
+    WRAP ENGINE=InnoDB;
+
+= Mroonga: 3
+
+(('tag:center'))
+(('tag:margin-bottom'))
+generated column対応\n
+(('note:MySQL 5.7で導入。MariaDBでいうvirtual column。'))
+
+  # coderay sql
+
+  CREATE TABLE users (
+    first_name text,
+    last_name text,
+    full_name text AS
+      (CONCAT_WS(' ', first_name, last_name))
+      STORED
+  ) ENGINE=Mroonga;
+
+= Mroonga: 4
+
+(('tag:center'))
+(('tag:margin-bottom'))
+ネイティブパーテション対応\n
+(('note:MySQL 5.7で導入。FULLTEXT INDEXを使えるようになる！'))
+
+  # coderay sql
+
+  CREATE TABLE memos (
+    created_time DATETIME,
+    content text,
+    FULLTEXT INDEX (content)
+  ) ENGINE=Mroonga
+    PARTITION BY RANGE (TO_DAYS(timestamp)) (
+      -- ...
+    );
