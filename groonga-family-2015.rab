@@ -109,16 +109,27 @@
       (('note:（ひらがな・ローマ字はいらない）'))\n
       (('note:（ローマ字の訓令式・ヘボン式の差はGroongaが吸収）'))
 
-= RKサーチの利用例
+= RKサーチの利用例1
 
-  * 検索ボックスでの補完
-    * Googleもやっているやつ
-    * ぐるなびはGroongaで実現
-  * 入力補助
-    * 例：タグの入力\n
-      (('note:同じことに違うタグをつけると検索精度があがらない'))\n
-      (('note:全体で一貫性があることは重要'))\n
-      (('note:既存のタグを入力補助することで同じことに同じタグをつけやすくする'))
+(('tag:center'))
+(('tag:margin-bottom'))
+入力補助
+
+  * 例：タグの入力\n
+    (('note:同じことに違うタグをつけると検索精度があがらない'))\n
+    (('note:全体で一貫性があることは重要'))\n
+    (('note:既存のタグを入力補助することで同じことに同じタグをつけやすくする'))
+  * 使い所：妥当な値の集合がある
+    * タグ入力なら既存タグ
+
+= RKサーチの利用例2
+
+(('tag:center'))
+(('tag:margin-bottom'))
+検索ボックスでの補完
+
+ * Googleもやっているやつ
+ * ぐるなびはGroongaで実現
 
 = ぐるなびでの利用例
 
@@ -128,6 +139,62 @@
 
 (('tag:center'))
 (('note:「yu」→「ユウラクチョウ」→「有楽町」'))
+
+= 補完の使い方1
+
+(('tag:center'))
+スキーマ作成
+
+  % groonga-suggest-create-dataset \
+      DB_PATH stations
+
+= 補完の使い方2
+
+(('tag:center'))
+データ準備
+
+  # coderay json
+
+  [
+    {
+      "_key": "有楽町",
+       "kana": ["ユウラクチョウ"],
+       "boost": 100
+    }
+  ]
+
+(('tag:center'))
+(('note:boostを100以上にすること'))
+
+= 補完の使い方3
+
+(('tag:center'))
+データロード
+
+  % curl \
+      'localhost:10041/d/load?table=item_stations' \
+      --header 'Content-Type: application/json' \
+      --data-binary @stations.json
+
+(('note:curlを使うときは--dataではなく--data-binaryを使うこと'))\n
+(('note:--dataは改行を削除するため'))
+
+= 補完の使い方4
+
+(('tag:center'))
+補完
+
+  % curl \
+     'localhost:10041/d/suggest' \
+     --get \
+     --data-urlencode 'types=complete' \
+     --data-urlencode 'table=item_stations' \
+     --data-urlencode 'column=kana' \
+     --data-urlencode 'query=yu'
+  [
+    [...],
+    {"complete": [[1],[...],["有楽町",101]]}
+  ]
 
 = Groongaのよいところ4
 
@@ -312,7 +379,7 @@ Groonga:(({MATCH AGAINST}))以外も処理\n
 = Mroongaが速い理由：3
 
 必要なカラム\n
-のみ\n
+((*のみ*))\n
 アクセス
 
 = 必要なカラムのみアクセス

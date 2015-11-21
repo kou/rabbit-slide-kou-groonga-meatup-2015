@@ -9,9 +9,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="220.2043mm"
-   height="110.29171mm"
-   viewBox="0 0 780.25146 390.7974"
+   width="220.20432mm"
+   height="113.87171mm"
+   viewBox="0 0 780.25151 403.48245"
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.5"
-     inkscape:cx="530.6108"
-     inkscape:cy="204.8198"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="384.819"
+     inkscape:cy="15.241382"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -56,7 +56,7 @@
      inkscape:label="レイヤー 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(93.034972,-46.321794)">
+     transform="translate(93.034971,-46.321779)">
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:32px;line-height:125%;font-family:Sans;-inkscape-font-specification:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -499,12 +499,12 @@
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:32px;line-height:125%;font-family:Sans;-inkscape-font-specification:Sans;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="82.575394"
-       y="374.53989"
+       y="383.02518"
        id="text8335"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          x="82.575394"
-         y="374.53989"
+         y="383.02518"
          id="tspan8339">カラム毎</tspan></text>
     <text
        sodipodi:linespacing="125%"
@@ -551,61 +551,74 @@
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:32px;line-height:125%;font-family:Sans;-inkscape-font-specification:Sans;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="79.90786"
-       y="418.09015"
+       y="429.40387"
        id="text8357"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          x="79.90786"
-         y="418.09015"
+         y="429.40387"
          id="tspan8361">カラム</tspan></text>
     <text
        sodipodi:linespacing="125%"
        id="text8367"
-       y="416.09015"
+       y="429.52518"
        x="567.90491"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:32px;line-height:125%;font-family:Sans;-inkscape-font-specification:Sans;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        xml:space="preserve"><tspan
          id="tspan8371"
-         y="416.09015"
+         y="429.52518"
          x="567.90491"
          sodipodi:role="line">行</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:32px;line-height:125%;font-family:Sans;-inkscape-font-specification:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="262.11063"
-       y="370.40976"
+       y="383.1377"
        id="text8373"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan8375"
          x="262.11063"
-         y="370.40976">値の管理</tspan></text>
+         y="383.1377">値の管理</tspan></text>
     <text
        sodipodi:linespacing="125%"
        id="text8407"
-       y="369.53989"
+       y="384.38913"
        x="568.08716"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:32px;line-height:125%;font-family:Sans;-inkscape-font-specification:Sans;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        xml:space="preserve"><tspan
          id="tspan8409"
-         y="369.53989"
+         y="384.38913"
          x="568.08716"
          sodipodi:role="line">行毎</tspan></text>
     <text
        sodipodi:linespacing="125%"
        id="text8411"
-       y="415.99911"
+       y="428.72702"
        x="181.02733"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:32px;line-height:125%;font-family:Sans;-inkscape-font-specification:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        xml:space="preserve"><tspan
-         y="415.99911"
+         y="428.72702"
          x="181.02733"
          id="tspan8413"
          sodipodi:role="line">得意なアクセス単位</tspan></text>
     <path
        style="fill:none;fill-rule:evenodd;stroke:#888a85;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 323.18747,66.595237 0,267.286363"
+       d="m 323.18747,66.595237 0,282.221393"
        id="path8159"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path4228"
+       d="m 669.44147,349.23842 -733.446197,0"
+       style="fill:none;fill-rule:evenodd;stroke:#888a85;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;fill-rule:evenodd;stroke:#888a85;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 669.44147,395.90747 -733.446197,0"
+       id="path4230"
        inkscape:connector-curvature="0" />
   </g>
 </svg>
