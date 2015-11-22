@@ -713,14 +713,146 @@ DBサイズ減少\n
 ドリルダウンの\n
 高機能化
 
-= ドリルダウンの高機能化
+= ドリルダウンの高機能化1
 
-  * 既存の集計処理：カウントのみ
-    * 追加：合計・最小値・最大値・平均
-  * 利用例
-    * ...
+(('tag:center'))
+(('tag:margin-bottom'))
+集計処理を追加
+
+  * 既存：
+    * カウントのみ
+  * 追加：
+    * 合計・最小値・最大値・平均
+
+= ドリルダウン+平均
+
+(('tag:center'))\n
+グループでドリルダウンして\n
+グループ毎の平均年齢も計算
+
+  % curl \
+     'localhost:10041/d/select' \
+     --get \
+     --data-urlencode 'table=users' \
+     --data-urlencode 'drilldown=group' \
+     --data-urlencode 'drilldown_calc_types=AVG' \
+     --data-urlencode 'drilldown_calc_target=age' \
+     --data-urlencode 'drilldown_output_columns=_key,_avg'
+
+= 平均の出力例
+
+  # coderay json
+  [... [
+    [100], # 100グループ
+    [
+      ["_key", "ShortText"],
+      ["_avg", "Float"]
+    ],
+    [
+      ["グループ1", 29.0], # 平均29.0歳
+      ["グループ2", 22.9], # 平均22.9歳
+      ...
+    ]]]
+
+= ドリルダウンの高機能化2
+
+(('tag:center'))
+(('tag:margin-bottom'))
+複数キーでのドリルダウン\n
+↓\n
+クロス集計
+
+(('tag:center'))
+例：市と年齢でのクロス集計
+
+  # RT
+
+  市＼年齢, 20歳, 21歳
+
+  札幌市, 999人, 100人
+  仙台市, 500人, 200人
+
+= 複数キードリルダウン例
+
+(('tag:center'))
+市と年齢でドリルダウン
+
+  % curl \
+     'localhost:10041/d/select' \
+     --get \
+     --data-urlencode 'table=users' \
+     --data-urlencode \
+       'drilldown[city_age].keys=city,age' \
+     --data-urlencode \
+       'drilldown[city_age]_output_columns=
+         _value.city,_value.age,_nsubrecs'
+
+= 出力例
+
+  # coderay json
+  [... [
+    [100], # 100パターン
+    [
+      ["city", "ShortText"],
+      ["age", "Int8"]
+      ["_nsubrecs", "Int32"]
+    ],
+    [
+      ["札幌市", 20, 999], # 札幌市の20歳は999人
+      ["札幌市", 21, 100], # 札幌市の21歳は100人
+      ["仙台市", 20, 500], # 仙台市の20歳は500人
+      ...
+    ]]]
+
+= Groonga: 4
+
+リクエスト\n
+キャンセル\n
+対応
+
+= リクエストキャンセル
+
+  % curl \
+     'localhost:10041/d/select' \
+     --get \
+     --data-urlencode 'table=users' \
+     --data-urlencode 'request_id=XXX' &
+  % curl \
+     'localhost:10041/d/request_cancel' \
+     --get \
+     --data-urlencode 'id=XXX'
+
+(('note:注：リクエストIDを重複無く付けることはクライアントの責任'))
+
+= Groonga: 5
+
+(({dump}))の\n
+ストリーム対応
+
+= (({dump}))のストリーム対応
+
+  * Before
+    * メモリー上で全部作ってから出力
+    * 大きなDBではメモリー使用量が多い
+  * After
+    * ダンプ内容を順次出力
+    * 大きなDBでもメモリー消費が少ない
+
+= XXX
+
+TODO: 5.0.0から
 
 = 今後
+
+= ヒント
+
+  * 実現は保証しない
+    * 実現しようとはするよ！
+  * 実現可能性を高めるには…
+    * 開発に参加\n
+      (('note:コード・ドキュメントを書く・テストする・宣伝する'))
+    * 開発者が開発する時間を増やす
+      (('note:他のユーザーをサポート・情報公開・仕事を頼む'))
 
 = Groonga: 1
 
@@ -728,7 +860,13 @@ DBサイズ減少\n
 (('tag:margin-bottom'))
 カラムストアをもっと活かす
 
-  * grn_ts（ぐるんたす）
+  * シーケンシャルサーチを速く！
+  * ソートを速く！
+  * ドリルダウンを速く！
+
+(('tag:center'))
+↓\n
+grn_ts（ぐるんたす）
 
 = Groonga: 2
 
@@ -801,6 +939,58 @@ mrubyをデフォルト有効
     * ドリルダウン：計算結果を使用\n
       (('note:（2015-11-29: 1件、2015-11-30: 2件）'))
 
+= (({select}))例
+
+  select Logs \
+    --column[access_day].type Time \
+    --column[access_day].source \
+      'time_floor_year(access_time)' \
+    --drilldown access_day
+
+= Groonga: 6
+
+(('tag:center'))
+(('tag:margin-bottom'))
+JSONでのパラメーター指定
+
+  * メリット
+    * プログラムから指定しやすい\n
+      (('note:ことがあるかもしれない'))
+  * デメリット
+    * クエリーログに残らない
+
+= クエリーストリング
+
+(('tag:center'))
+現行
+
+  % curl \
+     'localhost:10041/d/select' \
+     --get \
+     --data-urlencode 'table=users' \
+     --data-urlencode 'limit=100'
+
+= JSON
+
+  % cat select.json
+  {
+    "table": "users",
+    "limit": "100"
+  }
+  % curl \
+     'localhost:10041/d/select' \
+      --header 'Content-Type: application/json' \
+      --data-binary @select.json
+
+= Groonga: 7
+
+(('tag:center'))
+(('tag:margin-bottom'))
+ドキュメント改善
+
+  * 未ドキュメントな項目を書く
+  * 古いドキュメントを更新
+
 = Mroonga: 1
 
 (('tag:center'))
@@ -865,3 +1055,196 @@ generated column対応\n
     PARTITION BY RANGE (TO_DAYS(timestamp)) (
       -- ...
     );
+
+= Mroonga: 5
+
+(('tag:center'))
+(('tag:margin-bottom'))
+JSONの全文検索対応
+
+  # coderay sql
+
+  CREATE TABLE logs (
+    message JSON,
+    FULLTEXT INDEX (message)
+  ) ENGINE=Mroonga;
+  SELECT * FROM logs
+    WHERE MATCH(message)
+          AGAINST('*D+ error' IN BOOLEAN MODE);
+
+= Mroonga: 6
+
+(('tag:center'))
+(('tag:margin-bottom'))
+同義語展開対応
+
+  # coderay sql
+
+  SELECT * FROM memos
+    WHERE MATCH(content)
+          AGAINST(mroonga_expand_query('*D+ 焼き肉')
+                  IN BOOLEAN MODE);
+  -- → AGAINST('*D+ 焼き肉 OR 焼肉' IN BOOLEAN MDOE)
+  -- 同義語はMroongaのテーブルにして
+  -- SQLで管理できるようにする
+
+= Mroonga: 7
+
+(('tag:center'))
+(('tag:margin-bottom'))
+ドキュメント改善
+
+  * Sphinx→GitHub Pages
+    * Sphinx・reSTはオーバースペック
+    * Markdownで十分
+    * typoを見つけても正しく直せない
+
+= PGroonga: 1
+
+(('tag:center'))
+(('tag:margin-bottom'))
+(({text @@ pgroonga.query}))を導入
+
+  # coderay sql
+
+  SET enable_indexscan = off;
+  SET enable_bitmapscan = off;
+  SELECT * FROM WHERE content @@ '全文検索';
+  -- ↑PostgreSQL組み込みの@@が使われる
+  SELECT * FROM
+    WHERE content @@ '全文検索'::pgroonga.query;
+  -- ↑PGroonga提供の@@が使われる
+
+= PGroonga: 2
+
+(('tag:center'))
+(('tag:margin-bottom * 5'))
+もっとGroongaを活かす
+
+  # RT
+  delimiter = [|]
+
+  PGroonga | pg_bigm | Groonga
+
+  (('0.646s')) | (('0.556s')) | ((*0.085s*))
+
+(('note:ヒット数635,792、検索語は2文字'))
+
+(('tag:center'))
+生Groongaは1桁速い！\n
+(('note:詳細：https://github.com/groonga/wikipedia-search/issues/3'))
+
+= PGroonga: 3
+
+(('tag:center'))
+(('tag:margin-bottom'))
+同義語展開対応
+
+  # coderay sql
+  body @@ pgroonga.expand_query('ネジ')
+  -- ↓
+  body @@ 'ネジ OR ねじ OR ボルト'
+
+= PGroonga: 4
+
+(('tag:center'))
+(('tag:margin-bottom'))
+ステミング対応
+
+found/finds→find
+
+  # coderay sql
+  CREATE INDEX index ON entries
+    USING pgroonga (title)
+      WITH (token_filters = 'TokenStem');
+
+= PGroonga: 5
+
+(('tag:center'))
+(('tag:margin-bottom'))
+重み対応
+
+  # coderay sql
+  -- タイトルのほうが本文より10倍重要
+  body @@ ('title * 10 || body', 'ポスグレ')
+
+= PGroonga: 6
+
+(('tag:center'))
+(('tag:margin-bottom'))
+複合主キー対応
+
+  # coderay sql
+  CREATE TABLE t (
+    c1 INT,
+    c2 INT,
+    PRIMARY KEY (c1, c2)
+  );
+  CREATE INDEX index ON t
+    USING pgroonga (c1, c2);
+
+= PGroonga: 7
+
+(('tag:center'))
+(('tag:margin-bottom'))
+(({pg_dump}))の(({WITH}))問題を解消
+
+  # coderay sql
+  CREATE INDEX index ON t
+    USING pgroonga (c)
+      WITH (tokenizer = 'TokenMecab');
+  -- ↓pg_dump: クォートがとれる→小文字に正規化される
+  CREATE INDEX index ON t
+    USING pgroonga (c)
+      WITH (tokenizer = TokenMecab);
+
+= Rroonga: 1
+
+(('tag:center'))
+(('tag:margin-bottom'))
+ドキュメント改善
+
+  * Textile→Markdown
+  * 英語化
+  * 説明追加（主にコード例）
+
+= Droonga: 1
+
+シャーディング\n
+対応
+
+= Groonga族以外
+
+  * キラーアプリが欲しい
+  * 世界規模で認知されたい
+    * Mroonga・PGroongaをきっかけに\n
+      (('note:MroongaはMariaDBにバンドルされている'))
+  * 本を出したい
+    * 初心者向けのやつ
+
+= まとめ
+
+  * Groonga族は今年も進化した
+  * Groonga族は来年も進化する
+  * 来年はもっと世界規模で\n
+    ユーザーを増やしたい
+
+= おしらせ1
+
+  * Groongaで学ぶ全文検索\n
+    (('note:↑で検索！'))
+    * 隔週金曜の夜開催
+    * 予習復習なしで時間内で\n
+      効率よく全文検索を学ぶ会
+    * 参加者のレベルは問わない
+    * 内容は毎回参加者に合わせて決める
+
+全文検索を学びたい方はどうぞ！
+
+= おしらせ2
+
+MySQLとPostgreSQLと\n
+日本語全文検索\n
+\n
+来年2月9日（肉の日）\n
+DMM.comラボにて
