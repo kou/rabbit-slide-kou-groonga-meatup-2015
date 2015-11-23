@@ -185,12 +185,12 @@
 補完
 
   % curl \
-     'localhost:10041/d/suggest' \
-     --get \
-     --data-urlencode 'types=complete' \
-     --data-urlencode 'table=item_stations' \
-     --data-urlencode 'column=kana' \
-     --data-urlencode 'query=yu'
+      'localhost:10041/d/suggest' \
+      --get \
+      --data-urlencode 'types=complete' \
+      --data-urlencode 'table=item_stations' \
+      --data-urlencode 'column=kana' \
+      --data-urlencode 'query=yu'
   [
     [...],
     {"complete": [[1],[...],["有楽町",101]]}
@@ -731,13 +731,13 @@ DBサイズ減少\n
 グループ毎の平均年齢も計算
 
   % curl \
-     'localhost:10041/d/select' \
-     --get \
-     --data-urlencode 'table=users' \
-     --data-urlencode 'drilldown=group' \
-     --data-urlencode 'drilldown_calc_types=AVG' \
-     --data-urlencode 'drilldown_calc_target=age' \
-     --data-urlencode 'drilldown_output_columns=_key,_avg'
+      'localhost:10041/d/select' \
+      --get \
+      --data-urlencode 'table=users' \
+      --data-urlencode 'drilldown=group' \
+      --data-urlencode 'drilldown_calc_types=AVG' \
+      --data-urlencode 'drilldown_calc_target=age' \
+      --data-urlencode 'drilldown_output_columns=_key,_avg'
 
 = 平均の出力例
 
@@ -778,14 +778,14 @@ DBサイズ減少\n
 市と年齢でドリルダウン
 
   % curl \
-     'localhost:10041/d/select' \
-     --get \
-     --data-urlencode 'table=users' \
-     --data-urlencode \
-       'drilldown[city_age].keys=city,age' \
-     --data-urlencode \
-       'drilldown[city_age]_output_columns=
-         _value.city,_value.age,_nsubrecs'
+      'localhost:10041/d/select' \
+      --get \
+      --data-urlencode 'table=users' \
+      --data-urlencode \
+        'drilldown[city_age].keys=city,age' \
+      --data-urlencode \
+        'drilldown[city_age]_output_columns=
+          _value.city,_value.age,_nsubrecs'
 
 = 出力例
 
@@ -813,14 +813,14 @@ DBサイズ減少\n
 = リクエストキャンセル
 
   % curl \
-     'localhost:10041/d/select' \
-     --get \
-     --data-urlencode 'table=users' \
-     --data-urlencode 'request_id=XXX' &
+      'localhost:10041/d/select' \
+      --get \
+      --data-urlencode 'table=users' \
+      --data-urlencode 'request_id=XXX' &
   % curl \
-     'localhost:10041/d/request_cancel' \
-     --get \
-     --data-urlencode 'id=XXX'
+      'localhost:10041/d/request_cancel' \
+      --get \
+      --data-urlencode 'id=XXX'
 
 (('note:注：リクエストIDを重複無く付けることはクライアントの責任'))
 
@@ -838,9 +838,311 @@ DBサイズ減少\n
     * ダンプ内容を順次出力
     * 大きなDBでもメモリー消費が少ない
 
-= XXX
+= Groonga: 6
 
-TODO: 5.0.0から
+シャーディング\n
+対応
+
+= シャーディング対応
+
+  * 同一DB内
+    * 複数のホストにデータ分散ではない
+  * 目的
+    * テーブルの最大レコード数制限突破\n
+      (('note:1テーブルあたり最大約2億レコード'))
+  * サポート
+    * 月・日でのシャーディング
+
+= シャーディング：定義
+
+  % curl 'localhost:10041/d/table_create' \
+      --get \
+      --data-urlencode 'name=Logs_20151129' \
+      --data-urlencode 'flags=TABLE_NO_KEY'
+  % curl 'localhost:10041/d/column_create' \
+      --get \
+      --data-urlencode 'table=Logs_20151129' \
+      --data-urlencode 'name=timestamp' \
+      --data-urlencode 'flags=COLUMN_SCALAR' \
+      --data-urlencode 'type=Time'
+
+= シャーディング：ロード
+
+  # coderay json
+  [
+  {"timestamp": "2015-11-29 00:00:29"},
+  {"timestamp": "2015-11-29 00:00:30"},
+  {"timestamp": "2015-11-29 00:00:31"}
+  ]
+
+= シャーディング：準備
+
+  % curl 'localhost:10041/d/plugin_register' \
+      --gets \
+      --data-urlencode 'name=sharding'
+
+= シャーディング：検索
+
+  logical_select \
+    --logical_table Logs \
+    --shard_key timestamp \
+    --min "2015-11-29 00:00:00" \
+    --min_border "include" \
+    --max "2015-11-30 00:00:00" \
+    --max_border "exclude" \
+    --filter "..."
+
+= Groonga: 7
+
+正規表現対応
+
+= 正規表現
+
+  * 構文はRubyと同じ
+    * エンジンがRubyと同じだから
+  * 一部のパターンは索引を使える
+    * 前方一致：(({\A#{リテラル}}))
+    * 中間一致：(({#{リテラル}}))
+    * 後方一致：(({#{リテラル}\z}))
+
+= 正規表現：使い方
+
+    select \
+      --filter 'content @~ "\\AHello"'
+
+  * 演算子は(({@~}))
+  * エスケープが煩雑なので注意
+
+= Groonga: 8
+
+カスタム\n
+スコア関数対応
+
+= スコア関数
+
+  * 文書がどのくらいクエリーに\n
+    適合しているかの度合いを返す\n
+    関数
+  * これまではTFのみ
+    * TF=単語の出現数
+    * =単語の出現数がスコア
+
+= 新スコア関数
+
+  * (({score_tf_idf}))
+    * TF-IDFベースのスコア関数
+    * 単語の出現数を単語の重要度で補正
+  * (({score_tf_at_most}))
+    * 上限値付きTFベースのスコア関数
+    * スパマー対策ならこれで十分
+
+= スコア関数：使い方
+
+  select Logs \
+    --match_columns \
+      "scorer_tf_at_most(body, 3.0)" \
+    --query "keyword1 keyword2"
+
+(('tag:center'))
+(({match_columns}))で指定
+
+= Groonga: 9
+
+ログ\n
+ローテーション\n
+対応
+
+= ログローテーション
+
+  * 使い方
+    * groongaコマンドの起動オプション
+  * オプション
+    * (({--log-rotate-threshold-size}))
+    * (({--query-log-rotate-threshold-size}))
+
+= Groonga: 10
+
+キャッシュの\n
+最大キーサイズ\n
+増加
+
+= キャッシュのキーサイズ
+
+  * Before
+    * 4KiB
+  * After
+    * 64KiB - 1
+
+= Groonga: 11
+
+(({io_flush}))追加
+
+= (({io_flush}))
+
+  * メモリー上のデータを\n
+    ディスクに書き込むコマンド
+    * 通常はOSに任せている
+  * 目的：クラッシュ対策
+    * UNIX: プロセスが死んでもカーネルが生きていればいずれ書き込まれる
+    * Windows: プロセスが死ぬと書き込まれない
+
+= Groonga: 12
+
+使った索引を\n
+ログ出力
+
+= 使った索引をログ出力
+
+  * チューニングに便利
+    * SQLの(({EXPLAIN}))の不便バージョン\n
+      (('note:サーバーのログを確認しないといけないから'))
+  * ログレベルに注意
+    * デフォルトでは出力されない
+    * (({debug}))にすること
+
+= Groonga: 13
+
+Windows\n
+イベントログ\n
+対応
+
+= Windowsイベントログ
+
+(('tag:center'))
+使い方
+
+  % groonga --use-windows-event-log
+
+= Groonga: 14
+
+スレッド数の\n
+動的変更対応
+
+= スレッド数変更
+
+(('tag:center'))
+最大8スレッドに変更する例
+
+  % curl \
+      'localhost:10041/d/thread_limit' \
+      --get \
+      --data-urlencode 'max=8'
+
+= Groonga: 15
+
+(({column_copy}))追加
+
+= (({column_copy}))
+
+  * カラムの値をコピー
+    * サーバーサイドで実行
+  * 利用例
+    * テーブル・カラム定義変更
+    * 新カラム作成→コピー→
+    * 旧カラム削除→リネーム
+
+= Groonga: 16
+
+HTTP/2対応
+
+= HTTP/2対応
+
+  * nginxが対応したから
+  * groonga-httpdでのみ対応
+
+= Mroonga: 1
+
+    mroonga_boolean_mode_syntax_flags
+
+  * (({IN BOOLEAN MODE}))での構文を変更
+    * スクリプト構文→使える演算子が増加
+
+= スクリプト構文
+
+  # coderay sql
+  SET mroonga_boolean_mode_syntax_flags =
+    "SYNTAX_SCRIPT";
+
+  SELECT * FROM memos
+    WHERE MATCH(title)
+          AGAINST('title @~ ".+roonga"'
+                  IN BOOLEAN MODE);
+
+(('note:正規表現を使う例'))\n
+(('note:他にも関数を使えたり比較演算子を使えたりする'))\n
+(('note:MATCHに指定していないカラムでも検索できる'))
+
+= Mroonga: 2
+
+MariaDB\n
+カスタム\n
+パラメーター\n
+対応
+
+= インデックスパラメーター
+
+  # coderay sql
+
+  CREATE TABLE memos (
+    body text,
+    FULLTEXT INDEX body_index (body)
+      TOKENIZER='TokenMecab'
+      NORMALIZER='NormalizerAuto'
+      TOKEN_FILTERS='TokenFilterStopWord'
+      -- ↑COMMENTに書かなくてよい！
+  ) ENGINE=Mroonga DEFAULT CHARSET=utf8mb4;
+
+= カラムパラメーター
+
+  # coderay sql
+
+  CREATE TABLE tags (
+    name VARCHAR(64) PRIMARY KEY
+  ) ENGINE=Mroonga DEFAULT CHARSET=utf8mb4;
+
+  CREATE TABLE bugs (
+    tag VARCHAR(64) GROONGA_TYPE='tags'
+  ) ENGINE=Mroonga DEFAULT CHARSET=utf8mb4;
+
+= Mroonga: 3
+
+MySQL 5.7対応
+
+= MySQL 5.7対応
+
+  * MySQL 5.7でビルドできる
+  * JSON型対応
+
+= JSON型
+
+  # coderay sql
+
+  CREATE TABLE logs (
+    record JSON
+  ) ENGINE=Mroonga
+    DEFAULT CHARSET=utf8mb4;
+  INSERT INTO logs
+    VALUES ('{"message": "start"}');
+
+= Mroonga: 4
+
+MariaDB 10.1\n
+対応
+
+= Droonga: 1
+
+ダウンタイム\n
+なしの\n
+ノード追加対応
+
+= 今年のまとめ
+
+  * Groonga：たくさん改良
+  * Mroonga
+    * 使い勝手改良・最新対応
+  * PGroonga: 今年デビュー
+  * Rroonga：最新対応
+  * Droonga：可用性向上
 
 = 今後
 
@@ -951,7 +1253,8 @@ mrubyをデフォルト有効
 
 (('tag:center'))
 (('tag:margin-bottom'))
-JSONでのパラメーター指定
+JSONでのパラメーター指定\n
+(('note:（も使えるようにする）'))
 
   * メリット
     * プログラムから指定しやすい\n
@@ -965,10 +1268,10 @@ JSONでのパラメーター指定
 現行
 
   % curl \
-     'localhost:10041/d/select' \
-     --get \
-     --data-urlencode 'table=users' \
-     --data-urlencode 'limit=100'
+      'localhost:10041/d/select' \
+      --get \
+      --data-urlencode 'table=users' \
+      --data-urlencode 'limit=100'
 
 = JSON
 
@@ -978,9 +1281,9 @@ JSONでのパラメーター指定
     "limit": "100"
   }
   % curl \
-     'localhost:10041/d/select' \
-      --header 'Content-Type: application/json' \
-      --data-binary @select.json
+      'localhost:10041/d/select' \
+       --header 'Content-Type: application/json' \
+       --data-binary @select.json
 
 = Groonga: 7
 
