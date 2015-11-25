@@ -140,7 +140,7 @@
 (('tag:center'))
 (('note:「yu」→「ユウラクチョウ」→「有楽町」'))
 
-(('note:Groongaのサジェストで四苦八苦：'))\n
+(('note:出典：Groongaのサジェストで四苦八苦 by Walker'))\n
 (('note:https://speakerdeck.com/redfigure/groongafalsesaziesutodesi-ku-ba-ku'))
 
 = 補完の使い方1
@@ -241,9 +241,9 @@
 = Mroongaを使う：スキーマ
 
   # coderay sql
-  CREATE TABLE table (
-    column TEXT,
-    FULLTEXT INDEX (column)
+  CREATE TABLE texts (
+    content TEXT,
+    FULLTEXT INDEX (content)
     -- ↑と↓を追加
   ) ENGINE=Mroonga
     DEFAULT CHARSET=utf8mb4;
@@ -254,9 +254,9 @@
 = Mroongaを使う：検索
 
   # coderay sql
-  SELECT * FROM table
+  SELECT * FROM texts
     WHERE
-      MATCH(column)
+      MATCH(content)
       AGAINST('*D+ キーワード1 キーワード2'
               IN BOOLEAN MODE);
 
@@ -300,7 +300,7 @@ MySQLの機能を\n
 
   # RT
 
-  クエリー, 文字数, InnoDB\nmecab, InnoDB\n2gram, Mroonga\nbigram
+  クエリー, 文字数, InnoDB\nmecab, InnoDB\nbigram, Mroonga\nbigram
 
   COUNT, 1, (('2.62s')), N/A, ((*0.74s*))
   COUNT, 2, ((*0.07s*)), (('1.74s')), (('0.27s'))
@@ -317,9 +317,9 @@ MySQLの機能を\n
 = MySQL 5.7で日本語全文検索
 
   # coderay sql
-  CREATE TABLE table (
-    column TEXT,
-    FULLTEXT INDEX (column)
+  CREATE TABLE texts (
+    content TEXT,
+    FULLTEXT INDEX (content)
       WITH PARSER mecab -- ←がポイント
   ) ENGINE=InnoDB
     DEFAULT CHARSET=utf8mb4;
@@ -354,10 +354,10 @@ Mroongaも速い
 = (({ORDER BY LIMIT}))最適化
 
   # coderay sql
-  SELECT * FROM table
-    WHERE MATCH(column1)
+  SELECT * FROM texts
+    WHERE MATCH(content1)
           AGAINST('...' IN BOOLEAN MODE)
-    ORDER BY column2
+    ORDER BY priority
     LIMIT 10;
 
 (('tag:center'))
@@ -368,11 +368,11 @@ MySQLに先頭10件しか返さない\n
 = (({ORDER BY LIMIT}))最適化！
 
   # coderay sql
-  SELECT * FROM table
-    WHERE MATCH(column1)
+  SELECT * FROM texts
+    WHERE MATCH(content)
           AGAINST('...' IN BOOLEAN MODE)
-      AND column3 < 100 -- 追加
-    ORDER BY column2
+      AND n_likes < 100 -- 追加
+    ORDER BY priority
     LIMIT 10;
 
 (('tag:center'))
@@ -388,7 +388,7 @@ Groonga:(({MATCH AGAINST}))以外も処理\n
 = 必要なカラムのみアクセス
 
   # coderay sql
-  SELECT c1, c3, c5 FROM table;
+  SELECT c1, c3, c5 FROM t;
 
 (('tag:center'))
 (({c2})), (({c4}))にはアクセスしない\n
@@ -426,8 +426,8 @@ Groonga:(({MATCH AGAINST}))以外も処理\n
 = PGroongaを使う：索引
 
   # coderay sql
-  CREATE INDEX name ON table
-    USING pgroonga (column);
+  CREATE INDEX name ON texts
+    USING pgroonga (content);
 
 (('tag:center'))
 (('note:ポイント：全文検索の索引を作ると言っているだけ'))
@@ -435,9 +435,9 @@ Groonga:(({MATCH AGAINST}))以外も処理\n
 = PGroongaを使う：検索
 
   # coderay sql
-  SELECT * FROM table
+  SELECT * FROM texts
     WHERE
-      column @@ 'キーワード1 キーワード2';
+      content @@ 'キーワード1 キーワード2';
 
 (('tag:center'))
 (('note:ポイント：Web検索エンジンと同様にクエリーを書ける'))
@@ -689,6 +689,14 @@ Groonga互換API
     * DroongaからGroongaも可
   * クライアント無変更で動く
 
+= 概要のまとめ
+
+  * Groonga：高速・日本語得意
+  * Mroonga：高速・簡単
+  * PGroonga：高速・簡単
+  * Rroonga：高速・手軽
+  * Droonga：高速・スケーラブル
+
 = 最新情報
 
 = 最新情報：Groonga
@@ -796,7 +804,7 @@ DBサイズ減少\n
       --data-urlencode \
         'drilldown[city_age].keys=city,age' \
       --data-urlencode \
-        'drilldown[city_age]_output_columns=
+        'drilldown[city_age].output_columns=
           _value.city,_value.age,_nsubrecs'
 
 = 出力例
@@ -1055,15 +1063,6 @@ Windows\n
 
 = Groonga: 16
 
-HTTP/2対応
-
-= HTTP/2対応
-
-  * nginxが対応したから
-  * groonga-httpdでのみ対応
-
-= Groonga: 17
-
 Pretty print\n
 対応
 
@@ -1089,7 +1088,7 @@ Pretty print\n
     }
   ]
 
-= Groonga: 18
+= Groonga: 17
 
 新コマンド
 
@@ -1102,7 +1101,7 @@ Pretty print\n
   * (({thread_limit}))
     * 最大スレッド数を動的に変更
 
-= Groonga: 19
+= Groonga: 18
 
 新関数
 
@@ -1111,6 +1110,19 @@ Pretty print\n
   * (({prefix_rk_search()}))
     * ローマ字で検索
     * (({select}))で補完できる
+
+= Groonga: 19
+
+Groonga Admin\n
+進化
+
+= Groonga Admin
+
+  * Groongaの新しい管理画面
+    * 旧：Webからコマンドを実行できる
+    * 新：詳細を知らずに使える
+  * 試せる
+    * (('note:http://packages.groonga.org:10041/'))
 
 = 最新情報：Mroonga
 
