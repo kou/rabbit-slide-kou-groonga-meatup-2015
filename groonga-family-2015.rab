@@ -128,17 +128,20 @@
 (('tag:margin-bottom'))
 検索ボックスでの補完
 
- * Googleもやっているやつ
- * ぐるなびはGroongaで実現
+  * Googleもやっているやつ
+  * ぐるなびはGroongaで実現
 
 = ぐるなびでの利用例
 
   # image
   # src = images/gnavi-complete.png
-  # relative_height = 85
+  # relative_height = 70
 
 (('tag:center'))
 (('note:「yu」→「ユウラクチョウ」→「有楽町」'))
+
+(('note:Groongaのサジェストで四苦八苦：'))\n
+(('note:https://speakerdeck.com/redfigure/groongafalsesaziesutodesi-ku-ba-ku'))
 
 = 補完の使い方1
 
@@ -688,6 +691,15 @@ Groonga互換API
 
 = 最新情報
 
+= 最新情報：Groonga
+
+  # image
+  # src = images/groonga-logo.svg
+  # relative_width = 100
+
+(('tag:center'))
+ぐるんが
+
 = Groonga: 1
 
 groonga-httpdを\n
@@ -1050,6 +1062,66 @@ HTTP/2対応
   * nginxが対応したから
   * groonga-httpdでのみ対応
 
+= Groonga: 17
+
+Pretty print\n
+対応
+
+= 従来
+
+  % curl 'localhost:10041/d/status'
+  [[0,...],{"alloc_count":248,...}]
+
+= Pretty print
+
+  % curl \
+      'localhost:10041/d/status' \
+      --get \
+      --data-urlencode 'output_pretty=yes'
+  [
+    [
+      0,
+      ...
+    ],
+    {
+      "alloc_count": 248,
+      ...
+    }
+  ]
+
+= Groonga: 18
+
+新コマンド
+
+= 新コマンド
+
+  * (({reindex}))
+    * 既存インデックスを再作成
+  * (({schema}))
+    * スキーマを返す
+  * (({thread_limit}))
+    * 最大スレッド数を動的に変更
+
+= Groonga: 19
+
+新関数
+
+= 新関数
+
+  * (({prefix_rk_search()}))
+    * ローマ字で検索
+    * (({select}))で補完できる
+
+= 最新情報：Mroonga
+
+  # image
+  # src = images/mroonga-logo.svg
+  # relative_width = 100
+
+(('tag:center'))
+むるんが\n
+((*M*))ySQL + G((*roonga*))
+
 = Mroonga: 1
 
     mroonga_boolean_mode_syntax_flags
@@ -1129,6 +1201,17 @@ MySQL 5.7対応
 MariaDB 10.1\n
 対応
 
+= 最新情報：Droonga
+
+  # image
+  # src = images/droonga-logo.svg
+  # relative_width = 100
+
+(('tag:center'))
+どゅるんが\n
+((*D*))istributed ((*Groonga*))\n
+(('note:分散対応Groonga'))
+
 = Droonga: 1
 
 ダウンタイム\n
@@ -1153,8 +1236,17 @@ MariaDB 10.1\n
   * 実現可能性を高めるには…
     * 開発に参加\n
       (('note:コード・ドキュメントを書く・テストする・宣伝する'))
-    * 開発者が開発する時間を増やす
+    * 開発者が開発する時間を増やす\n
       (('note:他のユーザーをサポート・情報公開・仕事を頼む'))
+
+= 今後：Groonga
+
+  # image
+  # src = images/groonga-logo.svg
+  # relative_width = 100
+
+(('tag:center'))
+ぐるんが
 
 = Groonga: 1
 
@@ -1294,6 +1386,16 @@ JSONでのパラメーター指定\n
   * 未ドキュメントな項目を書く
   * 古いドキュメントを更新
 
+= 今後：Mroonga
+
+  # image
+  # src = images/mroonga-logo.svg
+  # relative_width = 100
+
+(('tag:center'))
+むるんが\n
+((*M*))ySQL + G((*roonga*))
+
 = Mroonga: 1
 
 (('tag:center'))
@@ -1402,6 +1504,16 @@ JSONの全文検索対応
     * Markdownで十分
     * typoを見つけても正しく直せない
 
+= 今後：PGroonga
+
+  # image
+  # src = images/pgroonga-logo.svg
+  # relative_width = 100
+
+(('tag:center'))
+ぴーじーるんが\n
+((*P*))ost((*g*))reSQL + ((*Groonga*))
+
 = PGroonga: 1
 
 (('tag:center'))
@@ -1501,6 +1613,16 @@ found/finds→find
     USING pgroonga (c)
       WITH (tokenizer = TokenMecab);
 
+= 今後：Rroonga
+
+  # image
+  # src = images/rroonga-logo.svg
+  # relative_width = 100
+
+(('tag:center'))
+るるんが\n
+((*R*))uby + ((*Groonga*))
+
 = Rroonga: 1
 
 (('tag:center'))
@@ -1510,6 +1632,17 @@ found/finds→find
   * Textile→Markdown
   * 英語化
   * 説明追加（主にコード例）
+
+= 今後：Droonga
+
+  # image
+  # src = images/droonga-logo.svg
+  # relative_width = 100
+
+(('tag:center'))
+どゅるんが\n
+((*D*))istributed ((*Groonga*))\n
+(('note:分散対応Groonga'))
 
 = Droonga: 1
 
